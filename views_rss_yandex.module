@@ -17,13 +17,17 @@ function views_rss_yandex_views_rss_namespaces() {
     'prefix' => 'xmlns',
     'uri' => 'http://news.yandex.ru',
   );
+  $namespaces['turbo'] = array(
+    'prefix' => 'xmlns',
+    'uri' => 'http://turbo.yandex.ru',
+  );
   if (!\Drupal::moduleHandler()->moduleExists('views_rss_media')) {
     $namespaces['media'] = array(
       'prefix' => 'xmlns',
       'uri' => 'http://search.yahoo.com/mrss/',
     );
   }
-  
+
   return $namespaces;
 }
 
@@ -99,9 +103,33 @@ function views_rss_yandex_views_rss_item_elements() {
     'description' => t('Handles several enclosure elements per item.'),
     'help' => 'http://partner.news.yandex.ru/tech.pdf',
   );
-  
+  $elements['turbo:content'] = array(
+    'description' => t('Full message text for search index.(Yandex Turbo)'),
+    'help' => 'https://yandex.ru/dev/turbo/doc/rss/simple-rss-docpage/',
+  );
+
   return $elements;
 }
+
+/**
+ * Implements hook_views_rss_item_elements_alter().
+ */
+// function views_rss_yandex_views_rss_item_elements_alter(&$elements) {
+// 	// Define custom preprocess function to use for wrapping content in CDATA tags and removing tokens.
+// // https://www.drupal.org/project/views_rss/issues/2026943#comment-11119587
+// 	$elements['views_rss_yandex']['turbo:content']['preprocess functions'][] = 'views_rss_yandex_cdata_wrapper';
+// }
+
+/**
+ * Preprocess function for wrapping element with CDATA.
+ */
+// function views_rss_yandex_cdata_wrapper(&$variables) {
+// 	$value = $variables['elements'][0]['value'];
+// 	if (!empty($value)) {
+// 		$variables['elements'][0]['value'] = '<![CDATA[' . htmlentities($value, ENT_QUOTES, 'UTF-8') . ']]>';
+// 		$variables['elements'][0]['encoded'] = TRUE;
+// 	}
+// }
 
 /**
  * Implements hook_views_rss_options_form_validate().
